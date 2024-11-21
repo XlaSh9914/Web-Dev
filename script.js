@@ -17,13 +17,13 @@ let header = ``;
 let body = ``;
 let instructions = ``;
 let navigationMessage = ``;
-let errorNote = ``;
+let eventNote = ``;
 let cart = [];
+let stopExecution = false;
 
 let giveList = (list, listOf) => {
   let generatedList = ``;
   for (let i = 0; i < list.length; i++) {
-    console.log(list[i][listOf]);
     generatedList += `\n${i + 1}. ${list[i][listOf]}`;
   }
   console.log(generatedList);
@@ -34,94 +34,255 @@ let promptText = (
   header = ``,
   body = ``,
   instructions = ``,
-  navigationMessage = `Enter 'X' to exit`,
-  errorNote = ``
+  navigationMessage = `'X' Exit`,
+  eventNote = ``
 ) => {
-  return `-🟦${header}🟦-\n\n${body}\n\n${instructions}\n\n${navigationMessage}\n${errorNote}`;
+  return `${eventNote}\n-🟦${header}🟦-\n\n${body}\n\n${instructions}\n\n${navigationMessage}`;
 };
 
-function selectCategory(error = false) {
+function selectCategory(eventCode = 0) {
+  if (stopExecution) return;
+
   header = `Welcome to the Book List! 😊`;
   body = giveList(bookData, "genre");
   instructions = `Enter the number of the genre you would like to see the books for:`;
-  errorNote = error ? `⚠Please enter a valid number` : ``;
-
-  let userInput = prompt(promptText(header, body, instructions, errorNote));
-
-  if (userInput.toLowerCase() == "x") {
-    alert("Goodbye! 👋");
-  } else if (userInput <= bookData.length && userInput > 0) {
-    selectBook(bookData[userInput - 1]);
-  } else {
-    selectCategory(true)
+  navigationMessage = `'X' Exit`;
+  switch (eventCode) {
+    case 1:
+      eventNote = `⚠Please enter a valid character`;
+      break;
+    case 2:
+      eventNote = `⚠Are you sure you want to exit\n 'Y' Yes\n 'N' No`;
+      break;
+    default:
+      eventNote = ``;
+      break;
   }
+
+  let userInput = prompt(promptText(header, body, instructions, navigationMessage, eventNote));
+
+  switch (eventCode) {
+    case 0:
+    case 1:
+      if (userInput.toLowerCase() == "x") {
+        selectCategory(2);
+      } else if (userInput <= bookData.length && userInput > 0) {
+        selectBook(bookData[userInput - 1]);
+        selectCategory();
+      } else {
+        selectCategory(1)
+      }
+      break;
+    case 2:
+      if (userInput.toLowerCase() == "y") {
+        alert("Goodbye! 👋");
+        stopExecution = true;
+      } else if (userInput.toLowerCase() == "n") {
+        selectCategory();
+      } else {
+        selectCategory(2);
+      }
+    }
 }
 
-function selectBook(bookList, error = false) {
+function selectBook(bookList, eventCode = 0) {
+  if (stopExecution) return;
+  
   let genreName = bookList.genre;
   let books = bookList.books;
   header = `${genreName.toUpperCase()} BOOKS📚`;
   body = giveList(books, "name");
   instructions = `Enter the number of the book you would like to see the details for`;
-  navigationMessage = `Enter 'B' to go back to the previous menu`;
-  errorNote = error ? `⚠Please enter a valid number` : ``;
+  navigationMessage = `'B' Back`;
+  switch (eventCode) {
+    case 1:
+      eventNote = `⚠Please enter a valid character`;
+      break;
+    case 2:
+      eventNote = `⚠Are you sure you want to exit\n 'Y' Yes\n 'N' No`;
+      break;
+    default:
+      eventNote = ``;
+      break;
+  }
 
-  let userInput = prompt(promptText(header, body, instructions, navigationMessage,errorNote));
+  let userInput = prompt(promptText(header, body, instructions, navigationMessage,eventNote));
 
-  if (userInput.toLowerCase() == "x") {
-    alert("Goodbye! 👋");
-  } else if (userInput.toLowerCase() == "b") {
-    selectCategory();
-  } else if (userInput <= books.length && userInput > 0) {
-    console.log(books[userInput - 1], bookList);
-    bookDetails(books[userInput - 1], bookList);
-  } else {
-    selectBook(bookList, true);
+  switch (eventCode){
+    case 0:
+    case 1:
+      if (userInput.toLowerCase() == "x") {
+        selectBook(bookList, 2);
+      } else if (userInput.toLowerCase() == "b") {
+        return // Go back to the select category
+      } else if (userInput <= books.length && userInput > 0) {
+        bookDetails(books[userInput - 1], bookList);
+        selectBook(bookList);
+      } else {
+        selectBook(bookList, 1);
+      }
+      break;
+    case 2:
+      if (userInput.toLowerCase() == "y") {
+        alert("Goodbye! 👋"); //exit
+        stopExecution = true;
+      } else if (userInput.toLowerCase() == "n") {
+        selectBook(bookList)
+      } else {
+        selectBook(bookList, 2);
+      }
+      break;
   }
 }
 
-function bookDetails(book, bookList, error) {
+function bookDetails(book, bookList, eventCode = 0) {
+  if (stopExecution) return;
+  
   header = `${book.name.toUpperCase()} DETAILS📚`;
   body = `Author:   ${book.author}\nGenre:    ${book.genre}\nPublish year:    ${book.year}\nDescription:    ${book.description}`;
   instructions = `'R' to rent the book.\n'P' to purchase the book for $${book.price}`;
-  navigationMessage = `Enter 'B' to go back to the previous menu`;
-  errorNote = error ? `⚠Please enter a valid number` : ``;
-
-  let userInput = prompt(promptText(header, body, instructions, navigationMessage, errorNote));
-
-  if (userInput.toLowerCase() == "x") {
-    alert("Goodbye! 👋");
-  } else if (userInput.toLowerCase() == "b") {
-    selectBook(bookList);
-  } else if (userInput.toLowerCase() == "r") {
-    rentInfo(book, bookList);
-  } else if (userInput.toLowerCase() == "p") {
-    alert("Book added to cart 🛒");
-    selectBook(bookList);
-  } else {
-    bookDetails(book, bookList, true)
+  navigationMessage = `'B' Back`;
+  switch (eventCode) {
+    case 1:
+      eventNote = `⚠Please enter a valid character`;
+      break;
+    case 2:
+      eventNote = `⚠Are you sure you want to exit\n 'Y' Yes\n 'N' No`;
+      break;
+    default:
+      eventNote = ``;
+      break;
   }
+
+  let userInput = prompt(promptText(header, body, instructions, navigationMessage, eventNote));
+
+  switch (eventCode){
+    case 0:
+    case 1:
+      if (userInput.toLowerCase() == "x") {
+        bookDetails(book, bookList, 2) //exit confirmation
+      } else if (userInput.toLowerCase() == "b") {
+        return //go back to select book
+      } else if (userInput.toLowerCase() == "r") {
+        rentInfo(book, bookList);
+        bookDetails(book, bookList)
+      } else if (userInput.toLowerCase() == "p") {
+        alert("Book added to cart 🛒");
+        selectBook(bookList);
+      } else {
+        bookDetails(book, bookList, 1)
+      }
+      break
+    case 2:
+      if (userInput.toLowerCase() == "y") {
+        alert("Goodbye! 👋");
+        stopExecution = true;
+      } else if (userInput.toLowerCase() == "n") {
+        bookDetails(book, bookList);
+      } else {
+        bookDetails(book, bookList, 2)
+      }
+      break; 
+    }
 }
 
-function rentInfo(book, bookList, error = false) {
+function rentInfo(book, bookList, eventCode = 0) {
+  if (stopExecution) return;
+  
   let rentPrices = rentPricing(book.rent,adminData.durationDiscount)
   header = `Rent Info for ${book.name} 📘`;
   body = `Renting a book will cost you:${rentPrices[3]}`;
   instructions = `Enter the number of rent options you would like:`;
-  navigationMessage = `Enter 'B' to go back to the previous menu`;
-  errorNote = error ? `⚠Please enter a valid number` : ``;
+  navigationMessage = `'B' Back`;
+  switch (eventCode) {
+    case 1:
+      eventNote = `⚠Please enter a valid character`;
+      break;
+    case 2:
+      eventNote = `⚠Are you sure you want to exit\n 'Y' Yes\n 'N' No`;
+      break;
+    default:
+      eventNote = ``;
+      break;
+  }
 
-  let userInput = prompt(promptText(header, body, instructions, navigationMessage, errorNote));
+  let userInput = prompt(promptText(header, body, instructions, navigationMessage, eventNote));
 
-  if (userInput.toLowerCase() == "x") {
-    alert("Goodbye! 👋");
-  } else if (userInput.toLowerCase() == "b") {
-    bookDetails(book, bookList);
-  } else if (userInput.toLowerCase() > 0 && userInput.toLowerCase() <= 3) {
-    alert("Book added to cart 🛒");
-    bookDetails(book, bookList);
-  } else {
-    rentInfo(book, bookList, true)
+  switch (eventCode){
+    case 0:
+    case 1:
+      if (userInput.toLowerCase() == "x") {
+        rentInfo(book, bookList, 2) //exit confirmation
+      } else if (userInput.toLowerCase() == "b") {
+        return //go back to book details
+      } else if (userInput.toLowerCase() > 0 && userInput.toLowerCase() <= 3) {
+        addToCart(book, rentPrices[userInput - 1]);
+        rentInfo(book, bookList)
+      } else {
+        rentInfo(book, bookList, 1)
+      }
+      break;
+    case 2:
+      if (userInput.toLowerCase() == "y") {
+        alert("Goodbye! 👋"); //exit
+        stopExecution = true;
+      } else if (userInput.toLowerCase() == "n") {
+        rentInfo(book, bookList);
+      } else {
+        rentInfo(book, bookList, 2)
+      }
+      break;
+  }
+}
+
+function addToCart(book, selectedRent, eventCode = 0) {
+  if (stopExecution) return;
+  
+  header = `Rent Info for ${book.name} 📘`;
+  body = `Renting this book will cost you: $${selectedRent}\nWould you like to rent it??`;
+  instructions = `'Y' Yes\n'N' No`;
+  navigationMessage = `'B' Back`;
+  switch (eventCode) {
+    case 1:
+      eventNote = `⚠Please enter a valid character`;
+      break;
+    case 2:
+      eventNote = `⚠Are you sure you want to exit\n 'Y' Yes\n 'N' No`;
+      break;
+    default:
+      eventNote = ``;
+      break;
+  }
+
+  let userInput = prompt(promptText(header, body, instructions, navigationMessage, eventNote));
+
+  switch (eventCode){
+    case 0:
+    case 1:
+      if (userInput.toLowerCase() == "x") {
+        addToCart(book, selectedRent, 2) //exit confirmation
+      } else if (userInput.toLowerCase() == "b") {
+        return //got back to rent info
+      } else if (userInput.toLowerCase() == "y") {
+        cart.push(book);
+        alert("Book added to cart 🛒");
+        return //got back to rent info
+      } else if (userInput.toLowerCase() == "n") {
+        return //got back to rent info
+      } else {
+        addToCart(book, selectedRent, 1)
+      }
+      break;
+    case 2:
+      if (userInput.toLowerCase() == "y") {
+        alert("Goodbye! 👋"); //exit
+        stopExecution = true;
+      } else if (userInput.toLowerCase() == "n") {
+        addToCart(book, selectedRent);
+      } else {
+        addToCart(book, selectedRent, 2)
+      }
+      break;
   }
 }
 
