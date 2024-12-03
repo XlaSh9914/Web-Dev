@@ -1,0 +1,231 @@
+:root{
+  --primary-color: rgb(202, 98, 1);
+  --primary-color-disabled: rgb(97, 48, 1);
+  --primary-color-transparent: rgb(97, 48, 1, 0.4);
+}
+
+body {
+  font-family: 'Arial', sans-serif;
+  background-image: url("https://static.vecteezy.com/system/resources/thumbnails/031/210/510/small_2x/cozy-cafe-bistro-with-blurred-background-and-wooden-montage-generative-ai-photo.jpg");
+  backdrop-filter: blur(3px);
+  color: #eaeaea;
+  margin: 0;
+  background-repeat: no-repeat; /* Do not repeat the image */
+  background-size: cover;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgba(164, 79, 0, 0.355);
+  padding: 10px 20px;
+}
+
+.btn{
+  padding: 10px 20px;
+  font-size: 20px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0px 5px 0px var(--primary-color-disabled);
+  transition: 0.3s;
+  background-color: transparent;
+  color: white;
+}
+
+.btn:hover{
+  filter: brightness(0.95);
+  box-shadow: 0 3px 0px var(--primary-color-disabled);
+  translate: 0 2px;
+}
+
+.btn:active{
+  translate: 0 4px;
+  box-shadow: 0 0px 0px;
+}
+
+.border{
+  padding: 8px 20px;
+  border: 2px solid var(--primary-color);
+}
+
+.highlight {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  /* padding: 10px 20px; */
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 10px;
+  box-shadow: 0px 5px 0px var(--primary-color-disabled);
+  transition: 0.2s;
+}
+
+.highlight:hover {
+  box-shadow: 0 3px 0px var(--primary-color-disabled);
+  filter: brightness(1.1);
+}
+
+.highlight:active{
+  translate: 0 4px;
+  box-shadow: 0 0px 0px var(--primary-color-disabled);
+}
+
+.logo{
+  text-decoration: none;
+  color: var(--primary-color);
+  font-size: xx-large;
+}
+
+.menu-container{
+  /* padding: 15px; */
+  display: flex;
+  flex-wrap: wrap;
+  background-color: transparent;
+  height: 90vh;
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.dish-card {
+  display: flex;
+  background: var(--primary-color-transparent);
+  backdrop-filter: blur(2px);
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  max-width: 400px;
+  transition: transform 0.2s;
+  margin: 8px;
+}
+
+.dish-card:hover {
+  transform: scale(1.01);
+}
+
+.dish-image {
+  width: 100px;
+  object-fit: cover;
+}
+
+.dish-details {
+  padding: 15px;
+  flex: 1;
+}
+
+.dish-name {
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  margin: 0 0 10px;
+}
+
+.dish-description {
+  font-size: 0.9rem;
+  margin: 0 0 15px;
+  color: #cfcfcf;
+}
+
+.price-quantity {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dish-price {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: white;
+}
+
+.quantity-adjust {
+  display: flex;
+  align-items: center;
+}
+
+/* #cart-slider {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 300px;
+  max-height: 400px;
+  overflow-y: auto;
+  background: black;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease;
+}
+
+#cart-slider.cart-closed {
+  transform: translateX(90%);
+}
+
+#cart-toggle {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  background: #ff5722;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+#cart-content {
+  padding: 20px;
+  display: none;
+}
+
+#cart-slider.cart-open #cart-content {
+  display: block;
+} */
+
+#cart-slider{
+  position: fixed;
+  bottom: 10px;
+  right: 16px;
+  width: 300px;
+  padding: 10px;
+}
+
+#cart-slider{
+  max-height: 400px;
+  background: rgba(198, 97, 1, 0.4);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: 0.3s;
+}
+
+#cart-slider:hover{
+  height: 150px;
+}
+
+#cart-slider.cart-closed{
+  height: 28px;
+  background: rgba(198, 97, 1, 0.4);
+  backdrop-filter: blur(8px);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: 0.3s;
+}
+
+#cart-items{
+  max-height: 100px;
+  overflow-y: scroll;
+}
+
+#cart-header {
+  font-size: larger;
+  display: flex; /* Enables Flexbox */
+  justify-content: space-between; /* Positions elements at opposite ends */
+  align-items: center; /* Vertically centers items */
+}
+
+.cart-closed #cart-content {
+  display: none;
+}
