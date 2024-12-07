@@ -1,96 +1,124 @@
-const dishes = [
-  {
-    name: "Spaghetti Carbonara",
-    description: "A classic Italian pasta dish made with creamy sauce, pancetta, and parmesan.",
-    price: 12.99,
-    imageURL: "https://static01.nyt.com/images/2021/02/14/dining/carbonara-horizontal/carbonara-horizontal-videoSmall-v2.jpg"
-  },
-  {
-    name: "Margherita Pizza",
-    description: "Traditional Italian pizza topped with fresh mozzarella, tomatoes, and basil.",
-    price: 10.99,
-    imageURL: "https://static.toiimg.com/photo/56868564.cms"
-  },
-  {
-    name: "Caesar Salad",
-    description: "Crisp romaine lettuce tossed with Caesar dressing, croutons, and parmesan.",
-    price: 8.99,
-    imageURL: "https://www.allrecipes.com/thmb/JTW0AIVY5PFxqLrf_-CDzT4OZQY=/0x512/filters:no_upscale():max_bytes(150000):strip_icc()/229063-Classic-Restaurant-Caesar-Salad-ddmfs-4x3-231-89bafa5e54dd4a8c933cf2a5f9f12a6f.jpg"
-  },
-  {
-    name: "Grilled Salmon",
-    description: "Fresh salmon fillet grilled to perfection, served with lemon butter sauce.",
-    price: 15.99,
-    imageURL: "https://www.allrecipes.com/thmb/CfocX_0yH5_hFxtbFkzoWXrlycs=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/ALR-12720-grilled-salmon-i-VAT-4x3-888cac0fb8a34f6fbde7bf836850cd1c.jpg"
-  },
-  {
-    name: "Chocolate Lava Cake",
-    description: "Rich and gooey chocolate cake with a molten center, served warm.",
-    price: 6.99,
-    imageURL: "https://preppykitchen.com/wp-content/uploads/2022/03/Chocolate-Lava-Cake-Recipe.jpg"
-  },
-  {
-    name: "Margherita Pizza",
-    description: "Traditional Italian pizza topped with fresh mozzarella, tomatoes, and basil.",
-    price: 10.99,
-    imageURL: "https://static.toiimg.com/photo/56868564.cms"
-  },
-  {
-    name: "Caesar Salad",
-    description: "Crisp romaine lettuce tossed with Caesar dressing, croutons, and parmesan.",
-    price: 8.99,
-    imageURL: "https://www.allrecipes.com/thmb/JTW0AIVY5PFxqLrf_-CDzT4OZQY=/0x512/filters:no_upscale():max_bytes(150000):strip_icc()/229063-Classic-Restaurant-Caesar-Salad-ddmfs-4x3-231-89bafa5e54dd4a8c933cf2a5f9f12a6f.jpg"
-  },
-  {
-    name: "Grilled Salmon",
-    description: "Fresh salmon fillet grilled to perfection, served with lemon butter sauce.",
-    price: 15.99,
-    imageURL: "https://www.allrecipes.com/thmb/CfocX_0yH5_hFxtbFkzoWXrlycs=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/ALR-12720-grilled-salmon-i-VAT-4x3-888cac0fb8a34f6fbde7bf836850cd1c.jpg"
-  },
-  {
-    name: "Chocolate Lava Cake",
-    description: "Rich and gooey chocolate cake with a molten center, served warm.",
-    price: 6.99,
-    imageURL: "https://preppykitchen.com/wp-content/uploads/2022/03/Chocolate-Lava-Cake-Recipe.jpg"
-  },
-  {
-    name: "Grilled Salmon",
-    description: "Fresh salmon fillet grilled to perfection, served with lemon butter sauce.",
-    price: 15.99,
-    imageURL: "https://www.allrecipes.com/thmb/CfocX_0yH5_hFxtbFkzoWXrlycs=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/ALR-12720-grilled-salmon-i-VAT-4x3-888cac0fb8a34f6fbde7bf836850cd1c.jpg"
-  },
-  {
-    name: "Chocolate Lava Cake",
-    description: "Rich and gooey chocolate cake with a molten center, served warm.",
-    price: 6.99,
-    imageURL: "https://preppykitchen.com/wp-content/uploads/2022/03/Chocolate-Lava-Cake-Recipe.jpg"
-  }
-];
-
-
-console.log(dishes)
+import dishes from "./Data/dishes.js";
 
 const menuList = document.querySelector(".menu-container");
 
-
-for (i=0; i<dishes.length; i++){
-  const userDom = document.createElement("div");
-  userDom.className = "dish-card";
-  userDom.innerHTML = ` <img src=${dishes[i].imageURL} alt="Dish Image" class="dish-image">
+for (let i = 0; i < dishes.length; i++) {
+  const dishCard = document.createElement("div");
+  dishCard.className = "dish-card";
+  dishCard.innerHTML = ` <img src=${dishes[i].imageURL} alt="Dish Image" class="dish-image">
   <div class="dish-details">
     <h3 class="dish-name">${dishes[i].name}</h3>
     <p class="dish-description">${dishes[i].description}</p>
     <div class="price-quantity">
       <span class="dish-price">$${dishes[i].price}</span>
-      <button class="btn highlight">🛒</button>
+      <button id="${dishes[i].id}" class="btn highlight cart-btn">🛒</button>
     </div>
   </div>`;
-  
-  menuList.append(userDom)
+
+  menuList.append(dishCard);
 }
 
-document.getElementById('cart-toggle').addEventListener('click', () => {
-  const cartSlider = document.getElementById('cart-slider');
-  // cartSlider.classList.toggle('cart-open');
-  cartSlider.classList.toggle('cart-closed');
+const cartItem = document.querySelector("#cart-items");
+const cartSlider = document.getElementById("cart-slider");
+
+document.getElementById("cart-toggle").addEventListener("click", () => {
+  if (cartSlider.style.maxHeight != "400px" && cartItem.innerHTML != "")
+    cartSlider.style.maxHeight = "400px";
+  else cartSlider.style.maxHeight = "28px";
+});
+
+function getDishById(id) {
+  return dishes.find((dish) => dish.id === parseInt(id));
+}
+
+function removeCartItem(id){
+  
+}
+
+function updateCartItem(item, subtract = false) {
+  const cartTotal = document.getElementById("cart-total");
+  const cartItemCount = document.getElementById("cart-count");
+  
+  let currentTotal = parseFloat(cartTotal.innerHTML.slice(8));
+  let itemCount = parseInt(cartItemCount.innerHTML);
+  
+  if (subtract){
+    item.quantity--;
+    itemCount--;
+    currentTotal -= item.price;
+    cartTotal.innerHTML = "Total: $"+currentTotal.toFixed(2);
+    if (item.quantity == 0){
+      const cartItem = document.getElementById(item.id+"-inCart");
+      
+      cartItemCount.innerHTML = itemCount; 
+      cartItem.remove();
+      
+      return
+    }
+  }
+  else{
+    item.quantity++;
+    currentTotal += item.price;
+    itemCount++;
+    cartTotal.innerHTML = "Total: $"+currentTotal.toFixed(2);
+  }
+  cartItemCount.innerHTML = itemCount; 
+  
+  let dishInfoElement = document.getElementById(item.id.toString()+"-inCart")
+  let dishPriceElement = dishInfoElement.children[1];
+  let dishQuantityElement = dishInfoElement.children[2].children[1];
+
+  item.currentPrice = item.price * item.quantity;
+  dishPriceElement.innerHTML = "$" + item.currentPrice.toFixed(2);
+  dishQuantityElement.innerHTML = item.quantity;
+}
+
+let cart = [];
+
+document.addEventListener("click", function (event) {
+  const clickedElement = event.target;
+  const id = clickedElement.id;
+  const foundInCart = cart.find((item) => item.id === parseInt(id));
+
+  if (clickedElement.classList[2] == "cart-btn") {
+    if (foundInCart == undefined) {
+      const dish = getDishById(id);
+      cartSlider.style.visibility = "visible";
+
+      const dishInfo = document.createElement("div");
+      dishInfo.className = "cart-info";
+      dishInfo.id = dish.id + "-inCart";
+      dishInfo.innerHTML = `<span style="width: 120px;">${dish.name}</span>
+      <span>$${dish.price}</span>
+      <div class="quantity-mod">
+        <button id="${dish.id}-sub" class="btn border sub" style="padding: 0 7px;">-</button>
+        <span>1</span>
+        <button id="${dish.id}-add" class="btn border add" style="padding: 0 5px;">+</button>
+      </div>
+      `;
+
+      cartItem.append(dishInfo);
+      cart.push({
+        id: dish.id,
+        price: dish.price,
+        currentPrice: dish.price,
+        quantity: 1,
+      });
+      updateCartItem({
+        id: dish.id,
+        price: dish.price,
+        currentPrice: dish.price,
+        quantity: 0,
+      });
+    } else {
+      updateCartItem(foundInCart);
+    }
+  }
+
+  if (clickedElement.classList[2] == "add"){
+    updateCartItem(foundInCart);
+  }
+  else if (clickedElement.classList[2] == "sub"){
+    updateCartItem(foundInCart, true);
+  }
 });
